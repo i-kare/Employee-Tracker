@@ -1,5 +1,5 @@
 # Employee-Tracker
-6.26.23 A command-line application that manages a company's employee database, using Node.js, Inquirer, and MySQL
+6.26.23 SQL: A command-line application that manages a company's employee database, using Node.js, Inquirer, and MySQL
 
 ## Acceptance Criteria
 1.WHEN I start the application THEN I am presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
