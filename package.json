@@ -4,10 +4,11 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-      "start": "node ./index.js"
+        "start": "node ./index.js"
     },
     "author": "karelyn-rojas",
     "dependencies": {
+        "dotenv": "^16.3.1",
         "inquirer": "^8.2.4",
         "mysql2": "^3.5.0"
     }
