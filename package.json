@@ -1,0 +1,14 @@
+{
+    "name": "Employee-Tracking-CMS",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "node ./index.js"
+    },
+    "author": "karelyn-rojas",
+    "dependencies": {
+        "inquirer": "^8.2.4",
+        "mysql2": "^3.5.0"
+    }
+}

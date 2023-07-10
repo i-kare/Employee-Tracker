@@ -1,4 +1,23 @@
 var inquirer = require('inquirer');
+const mysql = require('mysql2');
+
+// create the connection to database
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: "securepwd",
+  database: 'employee_tracker'
+});
+
+
+// simple query
+connection.query(
+    'SELECT * FROM `table` WHERE `name` = "Page" AND `age` > 45',
+    function(err, results, fields) {
+      console.log(results); // results contains rows returned by server
+      console.log(fields); // fields contains extra meta data about results, if available
+    }
+  );
 
 // An array of questions for the user
 const questions = [
@@ -93,11 +112,11 @@ const init = () => {
 // Function call to initialize app
 init();
 
-// View all employees
+// View all employees id first_name last_name title department salary manager
 // Add employees
 // Update employee role
 // View all roles
-// Add roles
-// View all Departments
+// Add roles id title department salary
+// View all Departments  id name
 // Add Department
 // Quit
