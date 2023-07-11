@@ -33,18 +33,79 @@ const promptUser = () => {
     return inquirer.prompt(questions)
 }
 
+const printRows = (rows, fields) =>{
+    let output = "\n";
+    for(let i = 0; i<fields.length; i++){
+        let fieldName = fields[i].name;
+        output+= fieldName
+        output+= " "
+    }
+    output+= "\n"
+    for(let i = 0; i<fields.length; i++){
+        let fieldName = fields[i].name;
+        for(let j = 0; j<fieldName.length; j++){
+            output += "-"
+        }
+        output+= " "
+    }
+    for(let i = 0; i<rows.length;i++){
+        let row = rows[i];
+        output+= "\n";
+
+        for(let j=0; j < fields.length; j++){
+            let fieldName = fields[j].name
+            let value = row[fieldName]
+            if(!value){ // For fields that return ''
+                value = "null";
+            }
+            output+= `${value} `
+        }
+    }
+    output+= "\n";
+    console.log(output)
+}
+
 // FUnction to determine which sql command to run
 const runSQLCommand = async (answer) => {
     if (answer === "View all Employees") {
-        const query = "SELECT id, first_name, last_name, role_id, manager_id FROM employee";
+        const query = 
+        `SELECT e.id, e.first_name, e.last_name, title, d.name as department, r.salary, CONCAT_WS(" ", e2.first_name, e2.last_name) as manager 
+        FROM employee e
+        INNER JOIN roles r 
+        on e.role_id = r.id
+        INNER JOIN department d
+        on r.department_id = d.id
+        LEFT JOIN employee e2
+        on e.manager_id = e2.id
+        `;
+
         const [rows,fields] = await connection.promise().query(query);
-        console.table(rows);
+        printRows(rows,fields);
     } else if (answer === "Add Employee") {
+        //TODO: Ask for first name and last name, and print out roles and choose, and print out managers and choose
+        //TODO: SQL Query for Add Employee to employee
+        //TODO: Print out added
     } else if (answer === "Update Employee Role") {
+        //TODO: Need to ask question about Employee
+        //TODO: list out all current employees, role to assign
+        //TODO: Print out updated
+        //TODO: Then take in values and use that in a SQL Update
     } else if (answer === "View All Roles") {
+        const query = "SELECT roles.id, title, name as department, salary FROM roles INNER JOIN department on roles.department_id = department.id";
+        const [rows,fields] = await connection.promise().query(query);
+        printRows(rows,fields)
     } else if (answer === "Add Role") {
+        //TODO: ASk for name, salary and department (list departments)
+        //TODO: SQL Query for Add Role to roles
+        //TODO: Print out add roles to db
     } else if (answer === "View All Departments") {
+        const query = "SELECT id, name FROM department";
+        const [rows,fields] = await connection.promise().query(query);
+        printRows(rows,fields)
     } else if (answer === "Add Department") {
+        //TODO: ask for department name
+        //TODO: then use department name and add to database
+        //TODO: then print out Added "name" to the database
     }
 }
 
@@ -58,19 +119,9 @@ const init = async () => {
     }
     console.log("Quitting App")
     connection.end();
-    //promptUser().then(({ choice }) => runSQLCommand(choice))
-    
+
     return;
 };
 
 // Function call to initialize app
 init();
-
-// View all employees id first_name last_name title department salary manager
-// Add employees
-// Update employee role
-// View all roles
-// Add roles id title department salary
-// View all Departments  id name
-// Add Department
-// Quit
