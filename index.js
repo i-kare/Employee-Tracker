@@ -103,9 +103,15 @@ const runSQLCommand = async (answer) => {
         const [rows,fields] = await connection.promise().query(query);
         printRows(rows,fields)
     } else if (answer === "Add Department") {
-        //TODO: ask for department name
-        //TODO: then use department name and add to database
-        //TODO: then print out Added "name" to the database
+        await inquirer.prompt( [{
+            type: 'input',
+            message: 'What is the name of the department?',
+            name: 'departmentName'
+        }]).then(answer=> {
+            const query = `INSERT INTO department (name) VALUES ("${answer.departmentName}")`
+            connection.promise().query(query);
+            console.log(`Added ${answer.departmentName} to the database`)
+        })
     }
 }
 
