@@ -95,9 +95,30 @@ const runSQLCommand = async (answer) => {
         const [rows,fields] = await connection.promise().query(query);
         printRows(rows,fields)
     } else if (answer === "Add Role") {
-        //TODO: ASk for name, salary and department (list departments)
-        //TODO: SQL Query for Add Role to roles
-        //TODO: Print out add roles to db
+        const getQuery = `SELECT id as value, name from department`
+        const [rows] = await connection.promise().query(getQuery);
+        await inquirer.prompt( [{
+            type: 'input',
+            message: 'What is the name of the role?',
+            name: 'role'
+        },
+        {
+            type: 'number',
+            message: 'What is the salary of the role?',
+            name: 'salary'
+        },
+        {
+            type: 'list',
+            message: 'Which department does the role belong to?',
+            name: 'department',
+            choices: rows,
+        }
+        ]).then(answers =>{
+            const insertQuery = `INSERT INTO roles (title, salary, department_id) 
+            VALUES ("${answers.role}", ${answers.salary}, ${answers.department})`
+            connection.promise().query(insertQuery);
+            console.log(`Added ${answers.role} to the database`)
+        })      
     } else if (answer === "View All Departments") {
         const query = "SELECT id, name FROM department";
         const [rows,fields] = await connection.promise().query(query);
