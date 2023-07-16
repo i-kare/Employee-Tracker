@@ -19,3 +19,9 @@
 8.WHEN I choose to update an employee role THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 
 ## Video of Application
+
+## How to run application
+1. Create .env file like the .env.sample and fill out the db password
+2. Run mysql -u root -p in the project folder
+3. While you're in the sql console, run source db/schema.sql and seeds.sql
+4. Then exit out of console and run npm start
