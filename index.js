@@ -119,15 +119,28 @@ const runSQLCommand = async (answer) => {
             connection.promise().query(insertQuery);
             console.log(`Added ${answers.first_name} ${answers.last_name} to the database`)
         }) 
-        
-        //TODO: Ask for first name and last name, and print out roles and choose, and print out managers and choose
-        //TODO: SQL Query for Add Employee to employee
-        //TODO: Print out added
     } else if (answer === "Update Employee Role") {
-        //TODO: Need to ask question about Employee
-        //TODO: list out all current employees, role to assign
-        //TODO: Print out updated
-        //TODO: Then take in values and use that in a SQL Update
+        const getEmployeeQuery = `SELECT id as value, CONCAT_WS(" ", first_name, last_name) as name FROM employee`
+        const getRoleQuery = `SELECT roles.id as value, title as name FROM roles`;
+        const [employeeRows] = await connection.promise().query(getEmployeeQuery);
+        const [rolesRows] = await connection.promise().query(getRoleQuery);
+        await inquirer.prompt( [{
+            type: 'list',
+            message: "Which employee's role do you want to update?",
+            name: 'employee',
+            choices: employeeRows
+        },
+        {
+            type: 'list',
+            message: "Which role do you want to assign the selected employee?",
+            name: 'role',
+            choices: rolesRows
+        }
+        ]).then(answers =>{
+            const updateQuery = `UPDATE employee set role_id = ${answers.role}  WHERE id = ${answers.employee}`
+            connection.promise().query(updateQuery);
+            console.log(`Updated employee's role`)
+        }) 
     } else if (answer === "View All Roles") {
         const query = "SELECT roles.id, title, name as department, salary FROM roles INNER JOIN department on roles.department_id = department.id";
         const [rows,fields] = await connection.promise().query(query);
