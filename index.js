@@ -1,6 +1,6 @@
 var inquirer = require('inquirer');
 const mysql = require('mysql2');
-require('dotenv').config();
+require('dotenv').config(); // require dotenv so we can provide sql password
 
 // create the connection to database
 const connection = mysql.createConnection({
@@ -33,6 +33,7 @@ const promptUser = () => {
     return inquirer.prompt(questions)
 }
 
+// Print out the database rows in pretty form
 const printRows = (rows, fields) =>{
     let output = "\n";
     for(let i = 0; i<fields.length; i++){
@@ -65,9 +66,9 @@ const printRows = (rows, fields) =>{
     console.log(output)
 }
 
-// FUnction to determine which sql command to run
+// Function to determine which sql command to run
 const runSQLCommand = async (answer) => {
-    if (answer === "View all Employees") {
+    if (answer === "View all Employees") { //If they choose view all employees, then run this select query and print out the rows
         const query = 
         `SELECT e.id, e.first_name, e.last_name, title, d.name as department, r.salary, CONCAT_WS(" ", e2.first_name, e2.last_name) as manager 
         FROM employee e
@@ -81,7 +82,7 @@ const runSQLCommand = async (answer) => {
 
         const [rows,fields] = await connection.promise().query(query);
         printRows(rows,fields);
-    } else if (answer === "Add Employee") {
+    } else if (answer === "Add Employee") { //If they add employee, then ask for user information, their role and manager, and then run an insert query
         const getRolesQuery = `SELECT id as value, title as name FROM roles`
         const [rolesRows] = await connection.promise().query(getRolesQuery);
         const getManagersQuery = `SELECT e.id as value, CONCAT_WS(" ", e.first_name, e.last_name) as name 
@@ -119,7 +120,7 @@ const runSQLCommand = async (answer) => {
             connection.promise().query(insertQuery);
             console.log(`Added ${answers.first_name} ${answers.last_name} to the database`)
         }) 
-    } else if (answer === "Update Employee Role") {
+    } else if (answer === "Update Employee Role") { // if they choose update, then we will ask which employee and role, then run update query
         const getEmployeeQuery = `SELECT id as value, CONCAT_WS(" ", first_name, last_name) as name FROM employee`
         const getRoleQuery = `SELECT roles.id as value, title as name FROM roles`;
         const [employeeRows] = await connection.promise().query(getEmployeeQuery);
@@ -141,11 +142,11 @@ const runSQLCommand = async (answer) => {
             connection.promise().query(updateQuery);
             console.log(`Updated employee's role`)
         }) 
-    } else if (answer === "View All Roles") {
+    } else if (answer === "View All Roles") { // if they choose view all roles, run a select query for roles table
         const query = "SELECT roles.id, title, name as department, salary FROM roles INNER JOIN department on roles.department_id = department.id";
         const [rows,fields] = await connection.promise().query(query);
         printRows(rows,fields)
-    } else if (answer === "Add Role") {
+    } else if (answer === "Add Role") { // if they choose add role, then we will ask name, salary and department, then do an insert query
         const getQuery = `SELECT id as value, name from department`
         const [rows] = await connection.promise().query(getQuery);
         await inquirer.prompt( [{
@@ -170,11 +171,11 @@ const runSQLCommand = async (answer) => {
             connection.promise().query(insertQuery);
             console.log(`Added ${answers.role} to the database`)
         })      
-    } else if (answer === "View All Departments") {
+    } else if (answer === "View All Departments") { // if they choose view all departments then run a select from departments query
         const query = "SELECT id, name FROM department";
         const [rows,fields] = await connection.promise().query(query);
         printRows(rows,fields)
-    } else if (answer === "Add Department") {
+    } else if (answer === "Add Department") { // if they choose add department then run an insert after asking department name
         await inquirer.prompt( [{
             type: 'input',
             message: 'What is the name of the department?',
@@ -187,7 +188,7 @@ const runSQLCommand = async (answer) => {
     }
 }
 
-// Initializer function that asks user questions and then writes the svg
+// Initializer function that asks user questions and then only ends the connection if they quit
 const init = async () => {
     let answer = await promptUser();
 
