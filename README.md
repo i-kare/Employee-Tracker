@@ -21,7 +21,8 @@
 ## Video of Application
 
 ## How to run application
-1. Create .env file like the .env.sample and fill out the db password
-2. Run mysql -u root -p in the project folder
-3. While you're in the sql console, run source db/schema.sql and seeds.sql
-4. Then exit out of console and run npm start
+1. Run npm install so all packages are properly installed 
+2. Create .env file like the .env.sample and fill out the db password
+3. Run mysql -u root -p in the project folder
+4. While you're in the sql console, run source db/schema.sql and seeds.sql
+5. Then exit out of console and run npm start
