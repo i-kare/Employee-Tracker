@@ -82,6 +82,44 @@ const runSQLCommand = async (answer) => {
         const [rows,fields] = await connection.promise().query(query);
         printRows(rows,fields);
     } else if (answer === "Add Employee") {
+        const getRolesQuery = `SELECT id as value, title as name FROM roles`
+        const [rolesRows] = await connection.promise().query(getRolesQuery);
+        const getManagersQuery = `SELECT e.id as value, CONCAT_WS(" ", e.first_name, e.last_name) as name 
+        FROM employee e 
+        INNER JOIN employee e2
+        on e.id = e2.manager_id`;
+        let managerRows = {"value":null, "name": "None" }
+        const [managerDbRows] = await connection.promise().query(getManagersQuery);
+        managerRows = [managerRows, ...managerDbRows];
+        await inquirer.prompt( [{
+            type: 'input',
+            message: "What is the employee's first name?",
+            name: 'first_name'
+        },
+        {
+            type: 'input',
+            message: "What is the employee's last name?",
+            name: 'last_name'
+        },
+        {
+            type: 'list',
+            message: "What is the employee's role?",
+            name: 'role',
+            choices: rolesRows,
+        },
+        {
+            type: 'list',
+            message: "Who is the employee's manager?",
+            name: 'manager',
+            choices: managerRows,
+        }
+        ]).then(answers =>{
+            const insertQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+            VALUES ("${answers.first_name}", "${answers.last_name}", ${answers.role}, ${answers.manager})`
+            connection.promise().query(insertQuery);
+            console.log(`Added ${answers.first_name} ${answers.last_name} to the database`)
+        }) 
+        
         //TODO: Ask for first name and last name, and print out roles and choose, and print out managers and choose
         //TODO: SQL Query for Add Employee to employee
         //TODO: Print out added
