@@ -19,6 +19,7 @@
 8.WHEN I choose to update an employee role THEN I am prompted to select an employee to update and their new role and this information is updated in the database
 
 ## Video of Application
+https://drive.google.com/file/d/1HQF2gyxvYrtRHjPq86LjnaFUeoHWgrFa/view?usp=sharing
 
 ## How to run application
 1. Run npm install so all packages are properly installed 
